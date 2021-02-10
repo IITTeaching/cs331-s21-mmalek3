@@ -106,7 +106,20 @@ def test1_2():
 ################################################################################
 # Implement this function
 def gen_passage(ngram_dict, length=100):
-    pass
+    present_token = random.choice(sorted(ngram_dict.keys()))
+    passage = present_token[:]
+    count = 1
+    while count < length:
+        tupl = random.choice(ngram_dict[present_token])
+        for word in tupl:
+            passage += " " + word
+        count += len(tupl)
+        present_token = tupl[-1]
+        if present_token not in ngram_dict.keys():
+            present_token  = random.choice(sorted(ngram_dict.keys()))
+            passage += " " + present_token
+            count += 1
+    return passage
 
 # 50 Points
 def test2():
