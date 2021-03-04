@@ -129,7 +129,8 @@ class ArrayList:
                     string = string +something + ', '
                 else:
                     string = string + something
-
+            else:
+                string = string + something
         something = ']'
         string = string + something
         return string
