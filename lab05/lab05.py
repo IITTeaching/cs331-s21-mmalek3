@@ -42,20 +42,40 @@ class LinkedList:
     def __getitem__(self, idx):
         """Implements `x = self[idx]`"""
         assert(isinstance(idx, int))
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+        nidx = self._normalize_idx(idx)
+        if nidx >= self.length:
+            raise IndexError
+        now = self.head.next
+        for i in range(self.length):
+            if i == nidx:
+                return now.val
+            now = now.next
 
     def __setitem__(self, idx, value):
         """Implements `self[idx] = x`"""
         assert(isinstance(idx, int))
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+        nidx = self._normalize_idx(idx)
+        if nidx >= self.length:
+            raise IndexError
+        now = self.head.next
+        for i in range(self.length):
+            if i == nidx:
+                now.val = value
+            now = now.next
 
     def __delitem__(self, idx):
         """Implements `del self[idx]`"""
         assert(isinstance(idx, int))
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+        nidx = self._normalize_idx(idx)
+        if nidx >= self.length:
+            raise IndexError
+        now = self.head.next
+        for i in range(self.length):
+            if i == nidx:
+                now.prior.next = now.next
+                now.next.prior = now.prior
+                self.length -= 1
+            now = now.next
 
     ### cursor-based access ###
 
@@ -100,13 +120,17 @@ class LinkedList:
         returns `str(x)` for all values `x` in this list, separated by commas
         and enclosed by square brackets. E.g., for a list containing values
         1, 2 and 3, returns '[1, 2, 3]'."""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+        string = '['
+        string += ', '.join(str(x) for x in self)
+        string += ']'
+        return string
 
     def __repr__(self):
         """Supports REPL inspection. (Same behavior as `str`.)"""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+        string = '['
+        string += ', '.join(str(x) for x in self)
+        string += ']'
+        return string
 
     ### single-element manipulation ###
 
@@ -114,33 +138,63 @@ class LinkedList:
         """Inserts value at position idx, shifting the original elements down the
         list, as needed. Note that inserting a value at len(self) --- equivalent
         to appending the value --- is permitted. Raises IndexError if idx is invalid."""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+        nidx = self._normalize_idx(idx)
+        if nidx > self.length:
+            raise IndexError
+        if nidx == self.length:
+            self.append(value)
+        else:
+            now = self.head.next
+            for x in range(nidx):
+                now = now.next
+            newN = LinkedList.Node(value, now.prior, now)
+            now.prior.next = newN
+            now.prior = newN
+            self.length += 1
 
     def pop(self, idx=-1):
         """Deletes and returns the element at idx (which is the last element,
         by default)."""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+        nidx = self._normalize_idx(idx)
+        temp = self[nidx]
+        del self[nidx]
+        return temp
 
     def remove(self, value):
         """Removes the first (closest to the front) instance of value from the
         list. Raises a ValueError if value is not found in the list."""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+        flag = False
+        now = self.head.next
+        for x in range(self.length):
+            if now.val == value:
+                some = x
+                flag = True
+                break
+            now = now.next
+        if flag == True:
+            del self[some]
+        else:
+            raise ValueError
 
     ### predicates (T/F queries) ###
 
     def __eq__(self, other):
         """Returns True if this LinkedList contains the same elements (in order) as
         other. If other is not an LinkedList, returns False."""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+        if self.length != other.length:
+            return False
+
+        for i in range(self.length):
+            if self[i] != other[i]:
+                return False
+        return True
 
     def __contains__(self, value):
         """Implements `val in self`. Returns true if value is found in this list."""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+        for i in range(self.length):
+            if self[i] == value:
+                return True
+        return False
 
     ### queries ###
 
@@ -150,26 +204,48 @@ class LinkedList:
 
     def min(self):
         """Returns the minimum value in this list."""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+        mini = self[0]
+        for x in self:
+            if x < mini:
+                mini = x
+        return mini
 
     def max(self):
         """Returns the maximum value in this list."""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+        maxi = self[0]
+        for x in self:
+            if x > maxi:
+                maxi = x
+        return maxi
 
     def index(self, value, i=0, j=None):
         """Returns the index of the first instance of value encountered in
         this list between index i (inclusive) and j (exclusive). If j is not
         specified, search through the end of the list for value. If value
         is not in the list, raise a ValueError."""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+        if j != None:
+            ni = self._normalize_idx(i)
+            nj = self._normalize_idx(j)
+            for x in range(ni, nj):
+                if self[x] == value:
+                    return x
+            raise ValueError
+        else:
+            ni = self._normalize_idx(i)
+            for i in range(ni, self.length):
+                if self[i] == value:
+                    return i
+            raise ValueError
 
     def count(self, value):
         """Returns the number of times value appears in this list."""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+        c=0
+        now = self.head.next
+        for i in self:
+            if now.val==value:
+                c+=1
+            now = now.next
+        return c
 
     ### bulk operations ###
 
@@ -178,30 +254,41 @@ class LinkedList:
         instance that contains the values in this list followed by those
         of other."""
         assert(isinstance(other, LinkedList))
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+        toAddto = LinkedList()
+        if self.length > 0:
+            for i in self:
+                toAddto.append(i)
+        if other.length > 0:
+            for j in other:
+                toAddto.append(j)
+        return toAddto
 
     def clear(self):
         """Removes all elements from this list."""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+        self.head.prior = self.head.next = self.head
+        self.length=0
+        return self
 
     def copy(self):
         """Returns a new LinkedList instance (with separate Nodes), that
         contains the same values as this list."""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+        copyList = LinkedList()
+        for i in self:
+            copyList.append(i)
+        return copyList
 
     def extend(self, other):
         """Adds all elements, in order, from other --- an Iterable --- to this list."""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+        for i in other:
+            self.append(i)
 
     ### iteration ###
     def __iter__(self):
         """Supports iteration (via `iter(self)`)"""
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+        now = self.head.next
+        while now and now.val !=None:
+            yield now.val
+            now = now.next
 
     ### reverse ###
     def reverse(self):
@@ -209,8 +296,15 @@ class LinkedList:
 
         E.g., for [1,2,3] you shoudl return [3,2,1].
         """
-        ### BEGIN SOLUTION
-        ### END SOLUTION
+        now = head.next
+        reversedList = head
+        reversedList.next = None
+        while now != None:
+            temp = now
+            now = now.next
+            temp.next = reversedList
+            reversedList = temp
+        return reversedList
 
 
 ################################################################################
