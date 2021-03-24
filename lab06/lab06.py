@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-
+#Quick test to commit from eclipse
 ################################################################################
 # STACK IMPLEMENTATION (DO NOT MODIFY THIS CODE)
 ################################################################################
@@ -166,6 +166,8 @@ class Queue:
 
     def enqueue(self, val):
         ### BEGIN SOLUTION
+        if self.head - self.tail == 1:
+            raise NotImplementedError
         ### END SOLUTION
 
     def dequeue(self):
