@@ -1,6 +1,7 @@
 from unittest import TestCase
 import random
 import functools
+from test.test_importlib.namespace_pkgs.project1 import parent
 
 ################################################################################
 # 1. IMPLEMENT THIS HEAP
@@ -24,10 +25,29 @@ class Heap:
 
     def heapify(self, idx=0):
         ### BEGIN SOLUTION
+        l=self._left(idx)
+        r=self._right(idx)
+        larger=idx
+        if l <len(self.data) and self.key(self.data[l]) > self.key(self.data[idx]):
+            larger=l
+        if r <len(self.data) and self.key(self.data[r]) > self.key(self.data[larger]):
+            larger=r
+        if( larger!=idx):
+            temp=self.data[idx]
+            self.data[idx]=self.data[larger]
+            self.data[larger]=temp
+            self.heapify(larger)
         ### END SOLUTION
 
     def add(self, x):
         ### BEGIN SOLUTION
+        self.data.append(x)
+        i=len(self.data)-1
+        while i > 0 and self.key(self.data[self._parent(i)]) < self.key(self.data[i]):
+            temp=self.data[i]
+            self.data[i]=self.data[self._parent(i)]
+            self.data[self._parent(i)]=temp
+            i=self._parent(i)
         ### END SOLUTION
 
     def peek(self):
@@ -130,8 +150,30 @@ def test_key_heap_5():
 ################################################################################
 def running_medians(iterable):
     ### BEGIN SOLUTION
+    minH=Heap(lambda x:-x)
+    maxH=Heap()
+    medians = []
+    count=0
+    for i,x in enumerate(iterable):
+        if x>=count:
+            minH.add(x)
+        else:
+            maxH.add(x)
+        if (len(minH.data)-len(maxH.data))> 1:
+            pop_value=minH.pop()
+            maxH.add(pop_value)
+        elif (len(maxH.data) - len(minH.data))> 1:
+            pop_value=maxH.pop()
+            minH.add(pop_value)
+        if len(minH.data) == len(maxH.data):
+            count=(minH.peek()+maxH.peek())/2
+        elif (len(minH.data)-len(maxH.data))== 1:
+            count=minH.peek()
+        elif (len(maxH.data) - len(minH.data))== 1:
+            count=maxH.peek()
+        medians.append(count)
+    return medians
     ### END SOLUTION
-
 ################################################################################
 # TESTS
 ################################################################################
@@ -174,6 +216,11 @@ def test_median_3():
 ################################################################################
 def topk(items, k, keyf):
     ### BEGIN SOLUTION
+    #for 
+        #if items[i]>parent
+            #replace parent
+            #sort heap accordingly with lowest value as the parent value
+    pass
     ### END SOLUTION
 
 ################################################################################
