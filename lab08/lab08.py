@@ -217,7 +217,6 @@ def test_median_3():
 def topk(items, k, keyf):
     ### BEGIN SOLUTION
     #for 
-    #retry
         #if items[i]>parent
             #replace parent
             #sort heap accordingly with lowest value as the parent value
