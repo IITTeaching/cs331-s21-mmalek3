@@ -25,13 +25,13 @@ class Heap:
 
     def heapify(self, idx=0):
         ### BEGIN SOLUTION
-        l=self._left(idx)
-        r=self._right(idx)
+        left=self._left(idx)
+        right=self._right(idx)
         larger=idx
-        if l <len(self.data) and self.key(self.data[l]) > self.key(self.data[idx]):
-            larger=l
-        if r <len(self.data) and self.key(self.data[r]) > self.key(self.data[larger]):
-            larger=r
+        if left <len(self.data) and self.key(self.data[left]) > self.key(self.data[idx]):
+            larger=left
+        if right <len(self.data) and self.key(self.data[right]) > self.key(self.data[larger]):
+            larger=right
         if( larger!=idx):
             temp=self.data[idx]
             self.data[idx]=self.data[larger]
