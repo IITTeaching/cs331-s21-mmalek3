@@ -14,6 +14,7 @@ class AVLTree:
             self.left, n.left, self.right, n.right = n.left, n.right, n, self.right
 
         def rotate_left(self):
+            #send in
             ### BEGIN SOLUTION
             n = self.right
             self.val, n.val = n.val, self.val
