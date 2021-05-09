@@ -34,7 +34,7 @@ def pivot_random(lst,low,high):
 
 def pivot_median_of_three(lst,low,high):
     ### BEGIN SOLUTION
-    pass #retest push
+    pass #
     ### END SOLUTION
 
 ################################################################################
