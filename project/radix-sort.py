@@ -9,7 +9,7 @@ def book_to_words(book_url='https://www.gutenberg.org/files/84/84-0.txt'):
     bookstring = bookascii.decode('ascii', 'replace')
     return bookstring.split()
 
-def __lengStr(array):           #gets longest strin
+def __lengStr(array):
     maxl = 0
     for i in array:
         if maxl < len(i):        #goes through the list of strings looking for the string with the highest amount of characters 
@@ -20,8 +20,8 @@ def __buckToList(array):
     return reduce(lambda x, y: x+y, array)      #this adds all the buckets together and makes a complete list
 
 def main():
-    lis = book_to_words()[0:100]
-    padArray =[r+' ' * (18-len(r)) for r in lis]   #pads the array of strings to so that we can compare and not get index error
+    lis = book_to_words()
+    padArray =[r+' ' * (__lengStr(lis)-len(r)) for r in lis]   #pads the array of strings to so that we can compare and not get index error
     sortedarray = radix_a_book(padArray, __lengStr(lis))
     print(sortedarray)
         
